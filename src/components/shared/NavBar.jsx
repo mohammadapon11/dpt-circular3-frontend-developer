@@ -16,13 +16,23 @@ const NavBar = () => {
             <div className="flex items-center justify-between">
               <ul className="flex items-center gap-8 font-semibold">
                 {navData?.map((item, index) => (
-                  <li key={index} className="hover:underline">
+                  <li
+                    key={index}
+                    className={`hover:underline ${
+                      item === "Master Price" && "underline text-white"
+                    }`}
+                  >
                     <a href="#">{item}</a>
                   </li>
                 ))}
               </ul>
               <div className="flex items-center gap-8">
-                <IoMdNotificationsOutline className="text-3xl cursor-pointer" />
+                <div className="relative">
+                  <IoMdNotificationsOutline className="text-3xl cursor-pointer" />
+                  <span className="bg-red-500 w-4 h-4 text-[13px] rounded-full flex items-center justify-center absolute -top-1 -right-0">
+                    4
+                  </span>
+                </div>
                 <img
                   className="rounded-full w-14 h-14 cursor-pointer"
                   src="/profile.jpg"
@@ -39,7 +49,7 @@ const NavBar = () => {
                 className="text-4xl"
               />
               <div
-                className={`flex items-center absolute transition-all duration-100  ${
+                className={`flex items-center absolute transition-all duration-100  z-30  ${
                   navShow ? "left-0 top-0" : "-left-[200%] top-0"
                 }`}
               >
@@ -64,7 +74,12 @@ const NavBar = () => {
                 <div className="w-[30vw] h-[100vh] bg-black opacity-40"></div>
               </div>
               <div className="flex items-center gap-8">
-                <IoMdNotificationsOutline className="text-3xl cursor-pointer" />
+                <div className="relative">
+                  <IoMdNotificationsOutline className="text-3xl cursor-pointer" />
+                  <span className="bg-red-500 w-4 h-4 text-[13px] rounded-full flex items-center justify-center absolute -top-1 -right-0">
+                    4
+                  </span>
+                </div>
                 <img
                   className="rounded-full w-14 h-14 cursor-pointer"
                   src="/profile.jpg"

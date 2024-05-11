@@ -7,9 +7,9 @@ const Home = () => {
   return (
     <>
       <NavBar />
-      {/* <FlightTypeBtn />
+      <FlightTypeBtn />
       <FlightTableInfo />
-      <Footer /> */}
+      <Footer />
     </>
   );
 };

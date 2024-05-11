@@ -1,6 +1,6 @@
 const DropDown = ({ data, handleText, btn }) => {
   return (
-    <div className="bg-white shadow-2xl flex flex-col pb-5 w-[250px] z-[1000]">
+    <div className="bg-white shadow-2xl flex flex-col pb-5 w-[250px] rounded-2xl">
       {data?.map((item, index) => (
         <p
           onClick={() => handleText(item, btn)}

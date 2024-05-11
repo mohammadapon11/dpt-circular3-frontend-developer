@@ -7,15 +7,15 @@ const Table = ({
   toText,
 }) => {
   return (
-    <div className="relative overflow-x-auto py-2 -z-10 pb-10">
+    <div className="relative overflow-x-auto py-2 z-10 pb-10">
       {filteredFlights.length > 0 ? (
         <>
           {filteredFlights && (
             <div className="pt-2 pb-4">
-              <h1 className="font-semibold text-black">
+              <h1 className="font-semibold text-black max-md:text-center max-md:mt-2">
                 Data Parsed Successfully
               </h1>
-              <h1 className="font-semibold text-black text-center text-3xl">
+              <h1 className="font-semibold max-md:mt-3 text-black text-center text-3xl">
                 This date{" "}
                 <span className="text-red-600 underline">
                   {filteredFlights.length}
@@ -24,7 +24,7 @@ const Table = ({
               </h1>
             </div>
           )}
-          <table className="w-full text-sm text-left  rtl:text-right text-gray-500 dark:text-gray-400">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-500 uppercase bg-gray-200 dark:bg-gray-700 dark:text-gray-400">
               <tr className="text-center">
                 <th scope="col" className="px-6 py-3">
