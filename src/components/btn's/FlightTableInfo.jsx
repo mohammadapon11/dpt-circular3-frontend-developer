@@ -14,10 +14,10 @@ import DropDown from "../shared/DropDown";
 import toast, { Toaster } from "react-hot-toast";
 import Table from "../table/Table";
 
-const FlightFilterBtn = () => {
+const FlightTableInfo = () => {
   const [dropDownText, setDropDownText] = useState("");
-  const [fromText, setFromText] = useState("JFK");
-  const [toText, setToText] = useState("SYD");
+  const [fromText, setFromText] = useState("DAC");
+  const [toText, setToText] = useState("IST");
   const [fromDayText, setFromDayText] = useState("Day -");
   const [toDayText, setToDayText] = useState("Day +");
   const [flightDateText, setflightDateText] = useState("Any Time");
@@ -25,7 +25,8 @@ const FlightFilterBtn = () => {
   const [howMuchText, setHowMuchText] = useState("1");
   const [selectedDate, setSelectedDate] = useState("");
   const [checked, setChecked] = useState(false);
-
+  const [selectedOption, setSelectedOption] = useState("dummy");
+  const [loading, setLoading] = useState(false);
   const handleText = (text, btn) => {
     if (btn === "from") {
       setFromText(text);
@@ -45,6 +46,7 @@ const FlightFilterBtn = () => {
   };
   const [flights, setFlights] = useState([]);
   const [filteredFlights, setFilteredFlights] = useState([]);
+  const [noFlight, setNotFlight] = useState("");
 
   useEffect(() => {
     // Fetch data from data.json
@@ -52,38 +54,47 @@ const FlightFilterBtn = () => {
       .then((response) => response.json())
       .then((data) => {
         setFlights(data);
-        setFilteredFlights(data);
+        setFilteredFlights([]);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
+
   const handleSearch = () => {
-    const data = {
-      fromText,
-      toText,
-      fromDayText,
-      toDayText,
-      flightDateText,
-      passengerYearText,
-      howMuchText,
-      selectedDate,
-    };
+    setLoading(true);
     if (!selectedDate) {
+      setLoading(false); // Set loading to false immediately if no date is selected
       return toast.error("Please select a date flight date!");
     }
-    const filtered = flights.filter((flight) => {
-      const departureDate = new Date(
-        flight.itineraries[0].segments[0].departure.at
-      );
-      return (
-        departureDate.toDateString() === new Date(selectedDate).toDateString()
-      );
-    });
-    setFilteredFlights(filtered);
+
+    setTimeout(() => {
+      const filtered = flights.filter((flight) => {
+        const segments = flight.itineraries[0].segments;
+        // Check if any segment matches the selected date and airport codes
+        return segments.some((segment) => {
+          const departureDate = new Date(segment.departure.at);
+          return (
+            departureDate.toDateString() ===
+              new Date(selectedDate).toDateString() &&
+            segment.departure.iataCode === fromText &&
+            segment.arrival.iataCode === toText
+          );
+        });
+      });
+      if (filtered.length === 0) {
+        setNotFlight("no flight");
+      }
+      setFilteredFlights(filtered);
+      setLoading(false); // Set loading to false after filtering
+    }, 1000);
+  };
+
+  const handleChange = (e) => {
+    setSelectedOption(e.target.value);
   };
 
   return (
     <SectionWrapper>
-      <div className="flex items-center justify-between gap-3  py-3">
+      <div className="flex items-center justify-between gap-3 py-3">
         {/* flight from */}
         <div
           className="relative"
@@ -233,7 +244,7 @@ const FlightFilterBtn = () => {
       <div className="flex items-center justify-between border-b border-blue-400 py-4">
         <div className="flex items-center gap-2">
           <input
-            onClick={() => setChecked(!checked)}
+            onChange={() => setChecked(!checked)}
             type="checkbox"
             checked={checked}
           />
@@ -241,11 +252,25 @@ const FlightFilterBtn = () => {
         </div>
         <div className="flex items-center gap-3">
           <p className="font-semibold">Environment</p>
-          <input type="radio" id="age1" name="age" value="30" />
-          <label for="age1">Dummy</label>
+          <input
+            type="radio"
+            id="dummy"
+            name="dummy"
+            value="dummy"
+            checked={selectedOption === "dummy"}
+            onChange={handleChange}
+          />
+          <label htmlFor="dummy">Dummy</label>
           <br />
-          <input type="radio" id="age2" name="age" value="60" />
-          <label for="age2">PDT</label>
+          <input
+            type="radio"
+            id="pdt"
+            name="pdt"
+            value="pdt"
+            checked={selectedOption === "pdt"}
+            onChange={handleChange}
+          />
+          <label htmlFor="pdt">PDT</label>
           <br />
         </div>
         <button
@@ -255,10 +280,18 @@ const FlightFilterBtn = () => {
           Search
         </button>
       </div>
-      <Table handleSearch={handleSearch} filteredFlights={filteredFlights} />
+      <Table
+        fromText={fromText}
+        toText={toText}
+        selectedDate={selectedDate}
+        noFlight={noFlight}
+        loading={loading}
+        handleSearch={handleSearch}
+        filteredFlights={filteredFlights}
+      />
       <Toaster />
     </SectionWrapper>
   );
 };
 
-export default FlightFilterBtn;
+export default FlightTableInfo;

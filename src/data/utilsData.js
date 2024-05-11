@@ -7,8 +7,32 @@ export const navData = [
 ];
 
 export const flightTypBtnData = ["Round Trip", "One Way", "Multi City"];
-export const fromData = ["DAC", "LHR", "CDG", "DXB", "PEK"];
-export const toData = ["SYD", "HND", "SIN", "YYZ", "MUC"];
+export const fromData = [
+  "DAC",
+  "IST",
+  "DXB",
+  "KWI",
+  "AUH",
+  "KUL",
+  "DOH",
+  "BCN",
+  "BAH",
+  "FRA",
+  "VCE",
+];
+export const toData = [
+  "IST",
+  "FCO",
+  "DXB",
+  "KWI",
+  "AUH",
+  "KUL",
+  "DOH",
+  "BCN",
+  "BAH",
+  "FRA",
+  "VCE",
+];
 export const fromDay = ["1", "2", "3", "4", "5", "15 days", "1 month"];
 export const toDay = ["2", "3", "4", "5", "15 days", "1 month", "2 months"];
 export const flightDate = [
