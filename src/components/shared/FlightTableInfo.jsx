@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import {
   flightDate,
   fromData,
@@ -10,11 +10,15 @@ import {
 } from "../../data/utilsData";
 import SectionWrapper from "../wrapper's/SectionWrapper";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import DropDown from "../shared/DropDown";
+import DropDown from "./DropDown";
 import toast, { Toaster } from "react-hot-toast";
-import Table from "../table/Table";
 
-const FlightTableInfo = () => {
+// Lazy load the Table component
+const Table = lazy(() => import("../table/Table"));
+
+// FlightTableInfo component for displaying flight table information
+const FlightTableInfo = React.memo(() => {
+  // State variables
   const [dropDownText, setDropDownText] = useState("");
   const [fromText, setFromText] = useState("DAC");
   const [toText, setToText] = useState("IST");
@@ -27,6 +31,11 @@ const FlightTableInfo = () => {
   const [checked, setChecked] = useState(false);
   const [selectedOption, setSelectedOption] = useState("dummy");
   const [loading, setLoading] = useState(false);
+  const [flights, setFlights] = useState([]);
+  const [filteredFlights, setFilteredFlights] = useState([]);
+  const [noFlight, setNotFlight] = useState("");
+
+  // Function to handle text change for dropdowns
   const handleText = (text, btn) => {
     if (btn === "from") {
       setFromText(text);
@@ -44,9 +53,6 @@ const FlightTableInfo = () => {
       setHowMuchText(text);
     }
   };
-  const [flights, setFlights] = useState([]);
-  const [filteredFlights, setFilteredFlights] = useState([]);
-  const [noFlight, setNotFlight] = useState("");
 
   // Fetch data from data.json
   useEffect(() => {
@@ -59,12 +65,12 @@ const FlightTableInfo = () => {
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
 
-  // search functions
+  // Function to handle search
   const handleSearch = () => {
     setLoading(true);
     if (!selectedDate) {
       setLoading(false); // Set loading to false immediately if no date is selected
-      return toast.error("Please select a date flight date!");
+      return toast.error("Please select a flight date!");
     }
 
     setTimeout(() => {
@@ -89,15 +95,17 @@ const FlightTableInfo = () => {
     }, 1000);
   };
 
+  // Function to handle radio button change
   const handleChange = (e) => {
     setSelectedOption(e.target.value);
   };
 
   return (
     <div>
+      {/* Section for flight table information */}
       <SectionWrapper>
         <div className="flex items-center justify-between max-xl:flex-wrap gap-3 py-3">
-          {/* flight from */}
+          {/* Flight from dropdown */}
           <div
             className="relative z-20"
             onClick={() => setDropDownText("")}
@@ -109,15 +117,15 @@ const FlightTableInfo = () => {
             </button>
             <div
               className={`absolute transition-all duration-300 ${
-                dropDownText == "from" ? "block" : "hidden"
+                dropDownText === "from" ? "block" : "hidden"
               }`}
             >
               <DropDown data={fromData} handleText={handleText} btn={"from"} />
             </div>
           </div>
-          {/* flight to */}
+          {/* Flight to dropdown */}
           <div
-            className="relative  z-20"
+            className="relative z-20"
             onClick={() => setDropDownText("")}
             onMouseOver={() => setDropDownText("to")}
             onMouseLeave={() => setDropDownText("")}
@@ -127,22 +135,22 @@ const FlightTableInfo = () => {
             </button>
             <div
               className={`absolute transition-all duration-300 ${
-                dropDownText == "to" ? "block" : "hidden"
+                dropDownText === "to" ? "block" : "hidden"
               }`}
             >
               <DropDown data={toData} handleText={handleText} btn={"to"} />
             </div>
           </div>
-          {/* flight date */}
+          {/* Flight date input */}
           <input
             className="h-9 border px-3 py-1"
             value={selectedDate}
             onChange={(e) => setSelectedDate(e.target.value)}
             type="date"
           />
-          {/* how much stay at least from days */}
+          {/* Day from dropdown */}
           <div
-            className="relative  z-20"
+            className="relative z-20"
             onClick={() => setDropDownText("")}
             onMouseOver={() => setDropDownText("fromDay")}
             onMouseLeave={() => setDropDownText("")}
@@ -152,7 +160,7 @@ const FlightTableInfo = () => {
             </button>
             <div
               className={`absolute transition-all duration-300 ${
-                dropDownText == "fromDay" ? "block" : "hidden"
+                dropDownText === "fromDay" ? "block" : "hidden"
               }`}
             >
               <DropDown
@@ -162,9 +170,9 @@ const FlightTableInfo = () => {
               />
             </div>
           </div>
-          {/* how much stay highest days */}
+          {/* Day to dropdown */}
           <div
-            className="relative  z-20"
+            className="relative z-20"
             onClick={() => setDropDownText("")}
             onMouseOver={() => setDropDownText("toDay")}
             onMouseLeave={() => setDropDownText("")}
@@ -174,15 +182,15 @@ const FlightTableInfo = () => {
             </button>
             <div
               className={`absolute transition-all duration-300 ${
-                dropDownText == "toDay" ? "block" : "hidden"
+                dropDownText === "toDay" ? "block" : "hidden"
               }`}
             >
               <DropDown data={toDay} handleText={handleText} btn={"toDay"} />
             </div>
           </div>
-          {/* Dummy */}
+          {/* Flight dummy dropdown */}
           <div
-            className="relative  z-20"
+            className="relative z-20"
             onClick={() => setDropDownText("")}
             onMouseOver={() => setDropDownText("flightDate")}
             onMouseLeave={() => setDropDownText("")}
@@ -192,7 +200,7 @@ const FlightTableInfo = () => {
             </button>
             <div
               className={`absolute transition-all duration-300 ${
-                dropDownText == "flightDate" ? "block" : "hidden"
+                dropDownText === "flightDate" ? "block" : "hidden"
               }`}
             >
               <DropDown
@@ -202,9 +210,7 @@ const FlightTableInfo = () => {
               />
             </div>
           </div>
-          {/* plus icon */}
-          <div className="text-2xl cursor-pointer">+</div>
-          {/* Passenger Year */}
+          {/* Passenger year dropdown */}
           <div
             className="relative z-20"
             onClick={() => setDropDownText("")}
@@ -216,7 +222,7 @@ const FlightTableInfo = () => {
             </button>
             <div
               className={`absolute transition-all duration-300 ${
-                dropDownText == "passengerYear" ? "block" : "hidden"
+                dropDownText === "passengerYear" ? "block" : "hidden"
               }`}
             >
               <DropDown
@@ -226,9 +232,9 @@ const FlightTableInfo = () => {
               />
             </div>
           </div>
-          {/* how much passenger */}
+          {/* Passenger count dropdown */}
           <div
-            className="relative  z-20"
+            className="relative z-20"
             onClick={() => setDropDownText("")}
             onMouseOver={() => setDropDownText("howMuch")}
             onMouseLeave={() => setDropDownText("")}
@@ -238,7 +244,7 @@ const FlightTableInfo = () => {
             </button>
             <div
               className={`absolute transition-all duration-300 ${
-                dropDownText == "howMuch" ? "block" : "hidden"
+                dropDownText === "howMuch" ? "block" : "hidden"
               }`}
             >
               <DropDown
@@ -248,10 +254,10 @@ const FlightTableInfo = () => {
               />
             </div>
           </div>
-          {/* plus icon */}
-          <div className="text-2xl cursor-pointer">+</div>
         </div>
+        {/* Extra options and search button */}
         <div className="flex items-center justify-between max-md:flex-wrap max-md:gap-3 border-b border-blue-400 py-4">
+          {/* Extra options */}
           <div className="flex items-center gap-2">
             <input
               onChange={() => setChecked(!checked)}
@@ -260,6 +266,7 @@ const FlightTableInfo = () => {
             />
             <span className="font-semibold">Extra Options</span>
           </div>
+          {/* Environment radio buttons */}
           <div className="flex items-center gap-3">
             <p className="font-semibold">Environment</p>
             <input
@@ -283,6 +290,7 @@ const FlightTableInfo = () => {
             <label htmlFor="pdt">PDT</label>
             <br />
           </div>
+          {/* Search button */}
           <button
             className="btn min-h-[2.1rem] h-[2.1rem] px-6 text-gray-200 bg-blue-900 hover:bg-blue-950"
             onClick={handleSearch}
@@ -290,19 +298,23 @@ const FlightTableInfo = () => {
             Search
           </button>
         </div>
-        <Table
-          fromText={fromText}
-          toText={toText}
-          selectedDate={selectedDate}
-          noFlight={noFlight}
-          loading={loading}
-          handleSearch={handleSearch}
-          filteredFlights={filteredFlights}
-        />
-      </SectionWrapper>{" "}
+        {/* Table component */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <Table
+            fromText={fromText}
+            toText={toText}
+            selectedDate={selectedDate}
+            noFlight={noFlight}
+            loading={loading}
+            handleSearch={handleSearch}
+            filteredFlights={filteredFlights}
+          />
+        </Suspense>
+      </SectionWrapper>
+      {/* Toast component */}
       <Toaster />
     </div>
   );
-};
+});
 
 export default FlightTableInfo;

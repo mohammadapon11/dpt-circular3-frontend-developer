@@ -1,6 +1,10 @@
-const DropDown = ({ data, handleText, btn }) => {
+import React from "react";
+
+// DropDown component for displaying dropdown menu
+const DropDown = React.memo(({ data, handleText, btn }) => {
   return (
     <div className="bg-white shadow-2xl flex flex-col pb-5 w-[250px] rounded-2xl">
+      {/* Mapping through data to render dropdown items */}
       {data?.map((item, index) => (
         <p
           onClick={() => handleText(item, btn)}
@@ -12,6 +16,6 @@ const DropDown = ({ data, handleText, btn }) => {
       ))}
     </div>
   );
-};
+});
 
 export default DropDown;

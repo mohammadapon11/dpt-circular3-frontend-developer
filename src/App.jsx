@@ -1,11 +1,12 @@
-import Home from "./pages/Home";
+import React from "react";
+import Home from "./pages/Home"; // Importing the Home component
 
-function App() {
+const App = React.memo(() => {
   return (
     <>
-      <Home />
+      <Home /> {/* Rendering the Home component */}
     </>
   );
-}
+});
 
 export default App;
